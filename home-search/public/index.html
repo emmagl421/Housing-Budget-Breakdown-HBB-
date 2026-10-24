@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en" data-bs-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Home Search Console</title>
+
+  <!--jQuery-->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/lib/marked.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js"></script>
+  <script src="script.js" defer></script>
+
+  <!-- Bootstrap 5.3 + Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!--CSS-->
+  <link rel="stylesheet" href="style.css">
+
+</head>
+<body>
+
+  <!-- ===== Top bar ===== -->
+  <nav class="app-topbar navbar px-3">
+    <div class="d-flex align-items-center gap-2">
+      <button class="btn btn-sm btn-outline-secondary d-lg-none" type="button"
+              data-bs-toggle="offcanvas" data-bs-target="#sidebar" aria-controls="sidebar"
+              aria-label="Open filters">
+        <i class="bi bi-sliders"></i>
+      </button>
+      <i class="bi bi-house-door-fill brand-mark"></i>
+      <span class="fw-semibold">Home Search Console</span>
+    </div>
+
+    <!-- Theme switcher -->
+    <div class="dropdown">
+      <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
+              data-bs-toggle="dropdown" aria-expanded="false" id="themeButton">
+        <i class="bi bi-moon-stars" id="themeIcon"></i>
+        <span class="ms-1 d-none d-sm-inline" id="themeLabel">Dark</span>
+      </button>
+      <ul class="dropdown-menu dropdown-menu-end">
+        <li><button class="dropdown-item theme-option" data-theme="light"><i class="bi bi-sun me-2"></i>Light</button></li>
+        <li><button class="dropdown-item theme-option active" data-theme="dark"><i class="bi bi-moon-stars me-2"></i>Dark</button></li>
+        <li><button class="dropdown-item theme-option" data-theme="system"><i class="bi bi-circle-half me-2"></i>System</button></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="app-body">
+
+    <!-- ===== Sidebar (offcanvas below lg) ===== -->
+    <aside class="app-sidebar offcanvas-lg offcanvas-start" tabindex="-1" id="sidebar" aria-labelledby="sidebarLabel">
+      <div class="offcanvas-header border-bottom">
+        <h5 class="offcanvas-title" id="sidebarLabel">Filters</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#sidebar" aria-label="Close"></button>
+      </div>
+
+      <div class="offcanvas-body d-block p-3 p-lg-4">
+        <h5 class="d-none d-lg-block mb-4">Filters</h5>
+
+        <!-- Location -->
+        <div class="filter-group">
+          <div class="filter-title"><i class="bi bi-geo-alt me-2"></i>Location</div>
+          <input type="text" class="form-control mb-2" id="filterCity" placeholder="City, neighborhood, or ZIP">
+          <select class="form-select" id="filterRadius" aria-label="Search radius">
+            <option value="5">Within 5 miles</option>
+            <option value="10" selected>Within 10 miles</option>
+            <option value="25">Within 25 miles</option>
+            <option value="50">Within 50 miles</option>
+          </select>
+        </div>
+
+        <!-- Price range -->
+        <div class="filter-group">
+          <div class="filter-title"><i class="bi bi-cash-stack me-2"></i>Price range</div>
+          <div class="d-flex justify-content-between small mb-2">
+            <span class="price-readout" id="minPriceLabel">$100,000</span>
+            <span class="price-readout" id="maxPriceLabel">$500,000</span>
+          </div>
+          <label for="minPrice" class="form-label small text-body-secondary mb-0">Minimum</label>
+          <input type="range" class="form-range" id="minPrice" min="0" max="1500000" step="10000" value="100000">
+          <label for="maxPrice" class="form-label small text-body-secondary mb-0">Maximum</label>
+          <input type="range" class="form-range" id="maxPrice" min="0" max="1500000" step="10000" value="500000">
+        </div>
+
+        <!-- Pet friendly -->
+        <div class="filter-group">
+          <div class="filter-title"><i class="bi bi-heart me-2"></i>Pets</div>
+          <div class="form-check form-switch mb-2">
+            <input class="form-check-input" type="checkbox" role="switch" id="petFriendly">
+            <label class="form-check-label" for="petFriendly">Pet friendly only</label>
+          </div>
+          <div id="petTypes" class="ps-1 d-none">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="petDogs" checked>
+              <label class="form-check-label" for="petDogs">Dogs</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="petCats" checked>
+              <label class="form-check-label" for="petCats">Cats</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="d-grid gap-2 mt-4">
+          <button class="btn btn-accent" type="button" id="applyFilters">Apply filters</button>
+          <button class="btn btn-outline-secondary" type="button" id="resetFilters">Reset</button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ===== Main ===== -->
+    <main class="app-main">
+      <div class="app-panels">
+        
+        <!-- House side -->
+        <section class="panel" aria-labelledby="houseTitle">
+          <header class="panel-header">
+            <span class="panel-icon"><i class="bi bi-house"></i></span>
+            <h2 id="houseTitle">Houses</h2>
+          </header>
+          <div class="panel-body" id="houseContent">
+            <!-- House content goes here -->
+            <div class="panel-empty" id="house-empty">
+              <div>
+                <i class="bi bi-buildings fs-2 d-block mb-2"></i>
+                Matching homes will show here.
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Budget side -->
+        <section class="panel" aria-labelledby="budgetTitle">
+          <header class="panel-header">
+            <span class="panel-icon"><i class="bi bi-wallet2"></i></span>
+            <h2 id="budgetTitle">Budget</h2>
+          </header>
+          <div class="panel-body" id="budgetContent">
+            <!-- Budget content goes here -->
+            <div class="panel-empty" id="budget-empty">
+              <div id="no-questions">
+                <i class="bi bi-calculator fs-2 d-block mb-2"></i>
+                Your budget breakdown will show here.
+              </div>
+            </div>
+            <div id="response-box" style="display: none;">
+
+            </div>
+          </div>
+        </section>
+
+      </div>
+
+      <!-- Prompt bar (spans both panels) -->
+      <form class="app-prompt" id="promptForm" autocomplete="off">
+        <div class="prompt-box">
+          <label for="promptInput" class="visually-hidden">Ask about homes or your budget</label>
+          <textarea id="promptInput" rows="1"
+                    placeholder="Ask about homes or your budget, e.g. “3 bedrooms under $350k near Blacksburg”"></textarea>
+          <button class="btn btn-accent px-3" id="send" type="submit" aria-label="Send">
+            <i class="bi bi-send-fill"></i>
+          </button>
+        </div>
+        <div class="small text-body-secondary mt-2 ps-1">Press Enter to send, Shift + Enter for a new line.</div>
+      </form>
+    </main>
+  </div>
+</body>
+</html>
