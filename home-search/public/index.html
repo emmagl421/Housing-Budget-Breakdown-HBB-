@@ -3,13 +3,28 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Apply the saved theme before the page draws, to avoid a flash -->
+  <script>
+    (function () {
+      let choice = 'dark';
+      try { choice = localStorage.getItem('theme') || 'dark'; } catch (e) {}
+      if (choice === 'system') {
+        choice = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      }
+      if (choice === 'light' || choice === 'dark') {
+        document.documentElement.setAttribute('data-bs-theme', choice);
+      }
+    })();
+  </script>
   <title>Home Search Console</title>
 
   <!--jQuery-->
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/lib/marked.umd.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <script src="script.js" defer></script>
 
   <!-- Bootstrap 5.3 + Bootstrap Icons -->
@@ -87,6 +102,19 @@
           <input type="range" class="form-range" id="maxPrice" min="0" max="1500000" step="10000" value="500000">
         </div>
 
+        <!-- Savings timeline -->
+        <div class="filter-group">
+          <div class="filter-title"><i class="bi bi-piggy-bank me-2"></i>Time to save</div>
+          <select class="form-select" id="filterSaveMonths" aria-label="Time to save">
+            <option value="">Let Gemma ask</option>
+            <option value="3">3 months</option>
+            <option value="6">6 months</option>
+            <option value="12">1 year</option>
+            <option value="18">18 months</option>
+            <option value="24">2 years</option>
+          </select>
+        </div>
+
         <!-- Pet friendly -->
         <div class="filter-group">
           <div class="filter-title"><i class="bi bi-heart me-2"></i>Pets</div>
@@ -123,15 +151,16 @@
             <span class="panel-icon"><i class="bi bi-house"></i></span>
             <h2 id="houseTitle">Houses</h2>
           </header>
-          <div class="panel-body" id="houseContent">
-            <!-- House content goes here -->
-            <div class="panel-empty" id="house-empty">
-              <div>
-                <i class="bi bi-buildings fs-2 d-block mb-2"></i>
-                Matching homes will show here.
+            <div class="panel-body" id="houseContent">
+              <!-- House content goes here -->
+              <div class="panel-empty" id="house-empty">
+                <div>
+                  <i class="bi bi-buildings fs-2 d-block mb-2"></i>
+                  Matching homes will show here.
+                </div>
               </div>
+              <div id="house-list" class="house-list" style="display: none;"></div>
             </div>
-          </div>
         </section>
 
         <!-- Budget side -->

@@ -1,25 +1,72 @@
 /* ---------- Theme tokens ---------- */
+/* STEP 1: All colors live here, one block per theme */
 :root,
 [data-bs-theme="light"] {
-  --app-bg: #eef1f5;
-  --app-surface: #ffffff;
-  --app-surface-2: #f6f8fb;
-  --app-border: #d8dee7;
-  --app-text: #1c2430;
-  --app-muted: #5d6b7e;
-  --app-accent: #9a7420;        /* brass, like a house key */
-  --app-accent-soft: rgba(154, 116, 32, .12);
+  /* Page */
+  --app-bg: #F3F0F8;            /* Pale lavender gray */
+  --app-surface: #FFFFFF;
+  --app-surface-2: #F8F6FB;
+  --app-border: #E2D9E2;
+  --app-text: #221C33;
+  --app-muted: #6B6380;
+
+  /* Accent */
+  --app-accent: #9580D4;        /* Fills, borders and glows */
+  --app-accent-text: #6A55B8;   /* Darker, for purple text on light backgrounds */
+  --app-on-accent: #1E1533;     /* Text on top of an accent fill */
+  --app-accent-rgb: 149, 128, 212;
+  --app-accent-soft: rgba(149, 128, 212, .14);
+
+  /* Chat bubbles */
+  --user-bubble-bg: #FFFFFF;
+  --user-bubble-border: #E2D9E2;
+  --user-bubble-text: #6A55B8;
+  --gemma-bubble-bg: #EBE6F3;
+  --gemma-bubble-border: #DCD3E8;
+
+  /* Donut chart */
+  --chart-color-1: #4B3A8C;
+  --chart-color-2: #B7A6E3;
+  --chart-color-3: #7A63C4;
+  --chart-color-4: #CDB9DD;
+  --chart-color-5: #9580D4;
+  --chart-color-6: #5D6B7E;
+  --chart-color-7: #A68FC9;
+  --chart-color-8: #2F2A4A;
 }
 
 [data-bs-theme="dark"] {
-  --app-bg: #000000;
-  --app-surface: #161616;
-  --app-surface-2: #212121;
-  --app-border: #333333;
-  --app-text: #e8e8e8;
-  --app-muted: #9a9a9a;
-  --app-accent: #d4ad57;
-  --app-accent-soft: rgba(212, 173, 87, .14);
+  /* Page */
+  --app-bg: #0E0B14;            /* Near black with a hint of purple */
+  --app-surface: #17131F;
+  --app-surface-2: #211C2B;
+  --app-border: #352E42;
+  --app-text: #ECE8F2;
+  --app-muted: #A49DB3;
+
+  /* Accent */
+  --app-accent: #CDB9DD;
+  --app-accent-text: #CDB9DD;   /* Light purple already reads well on dark */
+  --app-on-accent: #1E1533;
+  --app-accent-rgb: 205, 185, 221;
+  --app-accent-soft: rgba(205, 185, 221, .14);
+
+  /* Chat bubbles */
+  --user-bubble-bg: #6A55B8;
+  --user-bubble-border: #9580D4;
+  --user-bubble-text: #F4F7EA;
+  --gemma-bubble-bg: #241E2F;
+  --gemma-bubble-border: #3A3248;
+
+  /* Donut chart */
+  --chart-color-1: #CDB9DD;
+  --chart-color-2: #7A63C4;
+  --chart-color-3: #E2D9E2;
+  --chart-color-4: #9580D4;
+  --chart-color-5: #B7A6E3;
+  --chart-color-6: #9A9A9A;
+  --chart-color-7: #F4F7EA;
+  --chart-color-8: #6A55B8;
 }
 
 /* Bootstrap overrides driven by tokens */
@@ -46,7 +93,7 @@ body {
 }
 
 .brand-mark {
-  color: var(--app-accent);
+  color: var(--app-accent-text);      /* STEP 2 */
   font-size: 1.35rem;
 }
 
@@ -84,7 +131,7 @@ body {
 
 .price-readout {
   font-variant-numeric: tabular-nums;
-  color: var(--app-accent);
+  color: var(--app-accent-text);      /* STEP 2 */
   font-weight: 600;
 }
 
@@ -142,7 +189,7 @@ body {
   place-items: center;
   border-radius: .5rem;
   background: var(--app-accent-soft);
-  color: var(--app-accent);
+  color: var(--app-accent-text);      /* STEP 2 */
 }
 
 .panel-body {
@@ -164,7 +211,7 @@ body {
 }
 
 .panel-empty.has-reply {
-  background: var(--app-surface-2);  /* dark gray (#212121) in dark mode */
+  background: var(--app-surface-2);
   color: var(--app-text);
   place-items: start;                /* text starts at the top left */
   text-align: left;
@@ -206,16 +253,17 @@ body {
   max-height: 160px;
 }
 
+/* STEP 3: Accent button uses the purple tokens */
 .btn-accent {
   --bs-btn-bg: var(--app-accent);
   --bs-btn-border-color: var(--app-accent);
-  --bs-btn-color: #1b1406;
+  --bs-btn-color: var(--app-on-accent);
   --bs-btn-hover-bg: var(--app-accent);
   --bs-btn-hover-border-color: var(--app-accent);
-  --bs-btn-hover-color: #1b1406;
+  --bs-btn-hover-color: var(--app-on-accent);
   --bs-btn-active-bg: var(--app-accent);
-  --bs-btn-active-color: #1b1406;
-  --bs-btn-focus-shadow-rgb: 212, 173, 87;
+  --bs-btn-active-color: var(--app-on-accent);
+  --bs-btn-focus-shadow-rgb: var(--app-accent-rgb);
   font-weight: 600;
 }
 
@@ -233,6 +281,26 @@ body {
   box-shadow: 0 0 0 .2rem var(--app-accent-soft);
 }
 
+/* STEP 4: Focus rings in the accent color instead of Bootstrap blue */
+.form-check-input:focus {
+  border-color: var(--app-accent);
+  box-shadow: 0 0 0 .2rem var(--app-accent-soft);
+}
+/* Keep these two separate: one unknown selector would cancel a combined rule */
+.form-range:focus::-webkit-slider-thumb { box-shadow: 0 0 0 .2rem var(--app-accent-soft); }
+.form-range:focus::-moz-range-thumb { box-shadow: 0 0 0 .2rem var(--app-accent-soft); }
+
+/* STEP 4: The theme menu item while it's being clicked */
+.dropdown-menu {
+  --bs-dropdown-link-active-bg: var(--app-accent-soft);
+  --bs-dropdown-link-active-color: var(--app-text);
+}
+
+/* STEP 4: Highlighted text */
+::selection {
+  background: var(--app-accent-soft);
+}
+
 .theme-option.active {
   background: var(--app-accent-soft);
   color: var(--app-text);
@@ -248,7 +316,7 @@ body {
 #response-box h3 {
   font-size: 1.05rem;
   font-weight: 700;
-  color: var(--app-accent);
+  color: var(--app-accent-text);      /* STEP 2 */
   margin: 1.25rem 0 0.5rem;
 }
 
@@ -271,7 +339,7 @@ body {
 }
 
 #response-box li::marker {
-  color: var(--app-accent);
+  color: var(--app-accent-text);      /* STEP 2 */
 }
 
 #response-box strong {
@@ -282,4 +350,119 @@ body {
 #response-box hr {
   border-color: var(--app-border);
   margin: 1rem 0;
+}
+
+/* ---------- House cards ---------- */
+.house-list {
+  display: grid;
+  gap: .75rem;
+}
+
+.house-card {
+  display: block;
+  width: 100%;
+  text-align: left;
+  color: var(--app-text);
+  background: var(--app-surface-2);
+  border: 1px solid var(--app-border);
+  border-radius: .75rem;
+  padding: 1rem;
+  transition: border-color .15s, box-shadow .15s, transform .15s;
+}
+
+.house-card:hover,
+.house-card:focus-visible {
+  border-color: var(--app-accent);
+  outline: none;
+}
+
+.house-card.selected {
+  border-color: var(--app-accent);
+  box-shadow: 0 0 0 .2rem var(--app-accent-soft);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .house-card:hover { transform: translateY(-2px); }
+}
+
+.house-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: .35rem;
+}
+
+.house-badge {
+  font-size: .75rem;
+  font-weight: 600;
+  padding: .15rem .55rem;
+  border-radius: 999px;
+  background: var(--app-accent-soft);
+  color: var(--app-accent-text);      /* STEP 2 */
+}
+
+.house-price {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.house-address {
+  font-weight: 600;
+}
+
+.house-place,
+.house-stats,
+.house-none {
+  color: var(--app-muted);
+  font-size: .9rem;
+}
+
+.house-cta {
+  margin-top: .5rem;
+  font-size: .85rem;
+  font-weight: 600;
+  color: var(--app-accent-text);      /* STEP 2 */
+}
+
+/* ---------- Chat bubbles ---------- */
+/* Shared shape for every chat bubble */
+.chat-bubble {
+  width: fit-content;
+  max-width: calc(100% - 2.5rem);
+  border-radius: 12px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.75rem;
+  border: 1px solid var(--bs-border-color);
+}
+
+.chat-user {
+  margin-left: auto;
+  background: var(--user-bubble-bg);
+  border-color: var(--user-bubble-border);
+  color: var(--user-bubble-text);
+  white-space: pre-wrap;
+}
+
+.chat-gemma {
+  margin-right: auto;
+  background: var(--gemma-bubble-bg);
+  border-color: var(--gemma-bubble-border);
+}
+
+/* Remove the extra space Markdown leaves after the last paragraph or list */
+.chat-gemma > :last-child {
+  margin-bottom: 0;
+}
+
+/* Room for the donut chart inside Gemma's bubble */
+.chart-box {
+  position: relative;
+  height: 360px;
+  margin: 1rem 0;
+}
+
+.chart-warning {
+  margin-top: 0.75rem;
+  font-weight: 600;
+  color: var(--bs-danger-text-emphasis);
 }
